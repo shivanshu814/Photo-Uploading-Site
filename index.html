@@ -1,0 +1,42 @@
+<!-- @format -->
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<input type="file" accept="image/*" />
+		<img src="" alt="" />
+		<script>
+			let url =
+				'https://script.google.com/macros/s/AKfycbyhDo1vHCO2EuWPXfbnHfMH_f6ZizzDCIz2v6etcG1EsMThVVWigBm1HkhaBoFzQ801cQ/exec';
+			let file = document.querySelector('input');
+			let img = document.querySelector('img');
+			file.addEventListener('change', () => {
+				let fr = new FileReader();
+				fr.addEventListener('loadend', () => {
+					let res = fr.result;
+					img.src = res;
+					let spt = res.split('base64,')[1];
+					// console.log(spt);
+					let obj = {
+						base64: spt,
+						type: file.files[0].type,
+						name: file.files[0].name,
+					};
+					fetch(url, {
+						method: 'POST',
+						body: JSON.stringify(obj),
+					})
+						.then((r) => r.text())
+						.then((data) => console.log(data));
+				});
+				fr.readAsDataURL(file.files[0]);
+			});
+		</script>
+	</body>
+</html>
